@@ -1,12 +1,12 @@
 import css from "./NoteForm.module.css";
 import {ErrorMessage, Field, Form, Formik, type FormikHelpers} from "formik";
 import {useId} from "react";
-import type Note from "../../types/note.ts";
+import {getDefaultNoteTag, type Note} from "../../types/note.ts";
 
 const INITIAL_VALUES: Note = {
   title: "",
   content: "",
-  tag: "Todo",
+  tag: getDefaultNoteTag(),
 };
 
 interface NoteFormProps {
