@@ -1,6 +1,6 @@
 import ReactPaginateModule from "react-paginate";
-import type {ReactPaginateProps} from "react-paginate";
-import type {ComponentType} from "react";
+import type { ReactPaginateProps } from "react-paginate";
+import type { ComponentType } from "react";
 import css from "./Pagination.module.css";
 
 type ModuleWithDefault<T> = { default: T };
@@ -22,16 +22,16 @@ interface PaginationProps {
 }
 
 function Pagination({
-                      pageCount,
-                      pageRangeDisplayed = 5,
-                      marginPagesDisplayed = 1,
-                      onPageChange,
-                      forcePage,
-                      containerClassName = css.pagination,
-                      activeClassName = css.active,
-                      nextLabel = "→",
-                      previousLabel = "←",
-                    }: PaginationProps) {
+  pageCount,
+  pageRangeDisplayed = 5,
+  marginPagesDisplayed = 1,
+  onPageChange,
+  forcePage,
+  containerClassName = css.pagination,
+  activeClassName = css.active,
+  nextLabel = "→",
+  previousLabel = "←",
+}: PaginationProps) {
   return (
     <ReactPaginate
       pageCount={pageCount}
