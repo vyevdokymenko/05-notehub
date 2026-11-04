@@ -1,5 +1,6 @@
 import css from "./NoteForm.module.css";
-import {ErrorMessage, Field, Form, Formik, type FormikHelpers} from "formik";
+import * as Yup from 'yup';
+import {ErrorMessage, Field, Form, Formik} from "formik";
 import {useId} from "react";
 import {getDefaultNoteTag, type Note} from "../../types/note.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
@@ -28,14 +29,21 @@ function NoteForm({onClose, queryKey}: NoteFormProps) {
     },
   });
 
-  const handleSubmit = (values: Note, formikHelpers: FormikHelpers<Note>): void => {
-    console.log(values);
-    console.log(formikHelpers);
+  const handleSubmit = (values: Note): void => {
     createNoteM.mutate(values);
   };
 
+  const NewNoteSchema = Yup.object().shape({
+    title: Yup.string()
+      .min(3, "Title must be at least 3 characters")
+      .max(30, "Title is too long")
+      .required("Title is required"),
+    content: Yup.string()
+      .required("Content is required"),
+  });
+
   return (
-    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+    <Formik initialValues={INITIAL_VALUES} validationSchema={NewNoteSchema} onSubmit={handleSubmit}>
       <Form className={css.form}>
         <div className={css.formGroup}>
           <label htmlFor={`${id}-title`}>Title</label>
