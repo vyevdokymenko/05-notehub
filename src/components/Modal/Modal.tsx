@@ -4,10 +4,11 @@ import NoteForm from "../NoteForm/NoteForm.tsx";
 import {useEffect} from "react";
 
 interface ModalProps {
+  queryKey: string;
   onClose: () => void;
 }
 
-function Modal({onClose}: ModalProps) {
+function Modal({onClose, queryKey}: ModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -38,7 +39,7 @@ function Modal({onClose}: ModalProps) {
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        <NoteForm onCancel={onClose}/>
+        <NoteForm onClose={onClose} queryKey={queryKey}/>
       </div>
     </div>,
     document.body,

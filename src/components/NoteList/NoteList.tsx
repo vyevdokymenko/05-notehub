@@ -4,8 +4,8 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {deleteNote} from "../../services/noteService.ts";
 
 interface NoteListProps {
-  notes: Note[];
   queryKey: string;
+  notes: Note[];
 }
 
 function NoteList({notes, queryKey}: NoteListProps) {

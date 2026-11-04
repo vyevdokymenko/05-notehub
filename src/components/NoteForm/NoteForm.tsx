@@ -2,6 +2,8 @@ import css from "./NoteForm.module.css";
 import {ErrorMessage, Field, Form, Formik, type FormikHelpers} from "formik";
 import {useId} from "react";
 import {getDefaultNoteTag, type Note} from "../../types/note.ts";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {createNote} from "../../services/noteService.ts";
 
 const INITIAL_VALUES: Note = {
   title: "",
@@ -10,16 +12,27 @@ const INITIAL_VALUES: Note = {
 };
 
 interface NoteFormProps {
-  onCancel: () => void;
+  onClose: () => void,
+  queryKey: string
 }
 
-function NoteForm({onCancel}: NoteFormProps) {
+function NoteForm({onClose, queryKey}: NoteFormProps) {
+  const id = useId();
+  const queryClient = useQueryClient();
+
+  const createNoteM = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: [queryKey]});
+      onClose();
+    },
+  });
+
   const handleSubmit = (values: Note, formikHelpers: FormikHelpers<Note>): void => {
     console.log(values);
     console.log(formikHelpers);
+    createNoteM.mutate(values);
   };
-
-  const id = useId();
 
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
@@ -76,7 +89,7 @@ function NoteForm({onCancel}: NoteFormProps) {
           <button
             type="button"
             className={css.cancelButton}
-            onClick={onCancel}
+            onClick={onClose}
           >
             Cancel
           </button>

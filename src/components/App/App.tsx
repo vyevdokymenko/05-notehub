@@ -41,7 +41,7 @@ function App() {
         <button className={css.button} onClick={() => setIsModalOpened(true)}>
           Create note +
         </button>
-        {isModalOpened && <Modal onClose={() => setIsModalOpened(false)}/>}
+        {isModalOpened && <Modal queryKey={QUERY_KEY} onClose={() => setIsModalOpened(false)}/>}
       </header>
       <section>
         {isSuccess && <NoteList queryKey={QUERY_KEY} notes={data.notes}/>}
