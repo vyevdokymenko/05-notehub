@@ -2,11 +2,12 @@ import css from "./NoteForm.module.css";
 import * as Yup from 'yup';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {useId} from "react";
-import {getDefaultNoteTag, type Note} from "../../types/note.ts";
+import {getDefaultNoteTag, type NewNote, noteTags} from "../../types/note.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createNote} from "../../services/noteService.ts";
+import Loader from "../Loader/Loader.tsx";
 
-const INITIAL_VALUES: Note = {
+const INITIAL_VALUES: NewNote = {
   title: "",
   content: "",
   tag: getDefaultNoteTag(),
@@ -29,17 +30,20 @@ function NoteForm({onClose, queryKey}: NoteFormProps) {
     },
   });
 
-  const handleSubmit = (values: Note): void => {
+  const handleSubmit = (values: NewNote): void => {
     createNoteM.mutate(values);
   };
 
   const NewNoteSchema = Yup.object().shape({
     title: Yup.string()
       .min(3, "Title must be at least 3 characters")
-      .max(30, "Title is too long")
+      .max(50, "Title is too long")
       .required("Title is required"),
     content: Yup.string()
-      .required("Content is required"),
+      .max(500, "Content is too long"),
+    tag: Yup.string()
+      .oneOf(noteTags)
+      .required()
   });
 
   return (
@@ -109,6 +113,7 @@ function NoteForm({onClose, queryKey}: NoteFormProps) {
             Create note
           </button>
         </div>
+        {createNoteM.isPending && <Loader />}
       </Form>
     </Formik>
   );

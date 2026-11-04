@@ -1,7 +1,8 @@
-export type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
+export const noteTags = ["Todo", "Work", "Personal", "Meeting", "Shopping"] as const;
+export type NoteTag = typeof noteTags[number];
 
 export interface Note {
-  id?: string;
+  id: string;
   title: string;
   content: string;
   tag: NoteTag;
@@ -9,6 +10,12 @@ export interface Note {
   updatedAt?: string;
 }
 
+export interface NewNote {
+  title: string;
+  content: string;
+  tag: NoteTag;
+}
+
 export const getDefaultNoteTag = (): NoteTag => {
-  return "Todo";
+  return noteTags[0];
 }

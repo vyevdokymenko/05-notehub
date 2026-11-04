@@ -1,7 +1,7 @@
 // https://notehub-public.goit.study/api/docs
 
 import axios, {type InternalAxiosRequestConfig} from "axios";
-import {type Note, type NoteTag} from "../types/note.ts";
+import {type NewNote, type Note, type NoteTag} from "../types/note.ts";
 
 const api = axios.create({
   baseURL: 'https://notehub-public.goit.study/api',
@@ -31,24 +31,25 @@ interface SearchNotesResponse {
 export const fetchNotes = async (request: SearchNotesRequest): Promise<SearchNotesResponse> => {
   const search = request.searchText?.trim().length === 0
     ? null
-    : request.searchText;
+    : request.searchText?.trim();
   const {data} = await api.get<SearchNotesResponse>("/notes", {
     params: {
       search: search,
       tag: request.tag,
-      page: request.page ? request.page : 1,
-      perPage: request.perPage ? request.perPage : 12,
+      page: request.page ?? 1,
+      perPage: request.perPage ?? 12,
       sortBy: request.sortBy,
     },
   });
   return data;
 };
 
-export const createNote = async (note: Note): Promise<Note> => {
+export const createNote = async (note: NewNote): Promise<Note> => {
   const {data} = await api.post<Note>("/notes", note);
   return data;
 }
 
-export const deleteNote = async (noteId: Note["id"]): Promise<void> => {
-  await api.delete<Note>(`/notes/${noteId}`);
+export const deleteNote = async (noteId: Note["id"]): Promise<Note> => {
+  const {data} = await api.delete<Note>(`/notes/${noteId}`);
+  return data;
 }

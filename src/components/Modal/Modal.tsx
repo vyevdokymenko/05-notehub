@@ -1,14 +1,13 @@
 import css from "./Modal.module.css";
 import {createPortal} from "react-dom";
-import NoteForm from "../NoteForm/NoteForm.tsx";
 import {useEffect} from "react";
 
 interface ModalProps {
-  queryKey: string;
   onClose: () => void;
+  children: React.ReactNode;
 }
 
-function Modal({onClose, queryKey}: ModalProps) {
+function Modal({onClose, children}: ModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -39,7 +38,7 @@ function Modal({onClose, queryKey}: ModalProps) {
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        <NoteForm onClose={onClose} queryKey={queryKey}/>
+        {children}
       </div>
     </div>,
     document.body,

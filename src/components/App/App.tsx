@@ -7,24 +7,27 @@ import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {fetchNotes} from "../../services/noteService.ts";
 import {useDebouncedCallback} from "use-debounce";
 import NoteList from "../NoteList/NoteList.tsx";
+import NoteForm from "../NoteForm/NoteForm.tsx";
+import Loader from "../Loader/Loader.tsx";
 
 const QUERY_KEY = "notes";
 
 function App() {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
-
   const [searchText, setSearchText] = useState<string>('');
   const [page, setPage] = useState<number>(1);
 
-  const {data, isSuccess} = useQuery({
+  const {data, isSuccess, isFetching} = useQuery({
     queryKey: [QUERY_KEY, searchText, page],
     queryFn: () => fetchNotes({searchText: searchText, page: page}),
     placeholderData: keepPreviousData,
   });
 
   const updateSearchText = useDebouncedCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
-    300,
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
+      setPage(1);
+    }, 300,
   );
 
   return (
@@ -41,11 +44,22 @@ function App() {
         <button className={css.button} onClick={() => setIsModalOpened(true)}>
           Create note +
         </button>
-        {isModalOpened && <Modal queryKey={QUERY_KEY} onClose={() => setIsModalOpened(false)}/>}
+        {
+          isModalOpened && (
+            <Modal onClose={() => setIsModalOpened(false)}>
+              <NoteForm queryKey={QUERY_KEY} onClose={() => setIsModalOpened(false)}/>
+            </Modal>
+          )
+        }
       </header>
-      <section>
-        {isSuccess && <NoteList queryKey={QUERY_KEY} notes={data.notes}/>}
-      </section>
+      {isFetching && <Loader/>}
+      {
+        isSuccess && data.notes.length > 0 && (
+          <section>
+            <NoteList queryKey={QUERY_KEY} notes={data.notes}/>
+          </section>
+        )
+      }
     </div>
   );
 }
